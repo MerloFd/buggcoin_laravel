@@ -1,0 +1,39 @@
+schema: spec-driven
+
+# Contexto lido pelo OpenSpec em toda proposta. Se o seu `openspec init`
+# gerou um openspec/project.md em vez deste arquivo, cole o bloco abaixo lá.
+context: |
+  Projeto: BuggCoin, app pessoal de finanças de um único usuário.
+  Objetivo: mostrar quanto foi gasto no mês, quanto ainda dá para gastar e
+  quanto está comprometido nos próximos meses, com dados que chegam sozinhos
+  de dois bancos via Meu Pluggy (Open Finance). Lançamento manual complementa.
+
+  Stack: PHP 8.4, Laravel 13, Inertia 3, Vue 3.5 + TypeScript, Tailwind 4 +
+  shadcn-vue, Wayfinder, Fortify (2FA), MySQL 8.4, Pest 5, Pint, Larastan
+  nível 7, vue-tsc. PWA. Deploy em VPS Hostinger (Nginx + PHP-FPM).
+
+  Domínio:
+  - Dinheiro em centavos (BIGINT), sempre positivo; direção em coluna própria.
+  - Transação tem origem: pluggy ou manual.
+  - Conciliação (duplicata banco × manual, transferência entre contas) é sempre
+    sugerida e confirmada pelo usuário, nunca automática.
+  - Transações marcadas como transferência ou mescladas ficam fora dos totais.
+
+  Fontes da verdade:
+  - Modelo de dados e decisões: https://claude.ai/artifact/K62HwMTMFj63AdopaT4bbX
+  - Design system: https://claude.ai/artifact/4Y41T7AUPNH1hbWvkxQAD9
+  - Telas: https://claude.ai/artifact/PYdJpovaNa1gCkPyCCRFiF
+
+  Ordem das mudanças: bank-sync-and-list → manual-entries → reconciliation →
+  home-dashboard → commitments → pwa-and-deploy.
+
+rules:
+  proposal:
+    - Uma mudança cobre uma regra de negócio ou uma tela, não mais.
+    - Liste explicitamente o que fica fora do escopo.
+  specs:
+    - Requisitos com SHALL e pelo menos um cenário WHEN/THEN cada.
+    - Valores monetários nos cenários sempre em reais e em centavos.
+  tasks:
+    - Cada tarefa cabe em um diff revisável (até ~300 linhas).
+    - Testes antes da implementação nas tarefas de regra de negócio.
