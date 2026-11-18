@@ -9,7 +9,7 @@
 - [x] 1.6 Interface do starter kit em pt-BR (telas de login e configurações, componentes e mensagens do servidor)
 
 ## 2. Dados
-- [ ] 2.1 Migration e model `BankConnection`
+- [x] 2.1 Migration e model `BankConnection`
 - [ ] 2.2 Migration e model `Account`
 - [ ] 2.3 Migration e model `Transaction` com índice único em `pluggy_transaction_id`, enums `source`, `direction`, `status` e `pluggy_category` (texto, nulo); só as colunas desta mudança
 - [ ] 2.4 Factories dos três models
