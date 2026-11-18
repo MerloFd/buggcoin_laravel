@@ -22,7 +22,7 @@ Se o código ou um pedido contradiz essas fontes: pare e pergunte. Não resolva 
 
 ## Regras invioláveis
 
-- Dinheiro sempre em centavos inteiros (`BIGINT`), valor sempre positivo, direção em coluna própria (`in` / `out`). Nunca `float` para dinheiro.
+- Dinheiro sempre em centavos inteiros (`BIGINT`), valor sempre positivo, direção em coluna própria (`in` / `out`). Nunca `float` para dinheiro. Única exceção: `accounts.balance_cents` tem sinal, porque saldo é posição, não movimentação (cheque especial, fatura devida).
 - Nenhuma lib nova sem estar no registro de decisões. Precisa de uma? Proponha e espere.
 - `PLUGGY_CLIENT_ID` e `PLUGGY_CLIENT_SECRET` só no servidor, só no `.env`. Nunca em props do Inertia, logs ou testes.
 - Nunca assuma o formato de um endpoint do Pluggy. Leia a documentação atual (https://docs.pluggy.ai) antes de implementar e cite o endpoint usado no código.

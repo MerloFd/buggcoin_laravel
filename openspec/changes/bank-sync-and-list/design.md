@@ -17,6 +17,12 @@
 
 **Colunas só do necessário.** A migration de `transactions` nesta mudança cria só o que o sync e a lista usam. `category_id`, `is_transfer`, `merged_into_id`, `bill_id` e as colunas de parcela entram nas mudanças que as usam, cada uma com a sua migration.
 
+**Tipos de conta.** Só conta corrente (`checking`) e cartão (`credit_card`) entram no sync. Poupança e investimento que o Pluggy devolver são ignorados nesta mudança. `manual` fica para `manual-entries`.
+
+**Saldo com sinal.** `accounts.balance_cents` é `BIGINT` com sinal: saldo é posição, não movimentação, e pode ficar negativo. `credit_limit_cents` e todos os valores de transação continuam positivos.
+
+**Fuso.** O app roda em `America/Sao_Paulo` (`APP_TIMEZONE`), para que "mês atual" e "hoje" sigam o horário de Brasília.
+
 **Categoria do Pluggy.** Coluna `pluggy_category` (`VARCHAR`, nula) guarda o texto da categoria que o Pluggy manda. A lista mostra esse texto. Quando as categorias próprias chegarem, ele vira só sugestão.
 
 **Conversão de valor.** Pluggy devolve `amount` decimal e `type` (`DEBIT` / `CREDIT`). Gravamos `amount_cents = (int) round(abs($amount) * 100)` e `direction = out` para DEBIT, `in` para CREDIT. Verificar no payload real se transações de cartão seguem a mesma convenção de sinal antes de fechar a regra.

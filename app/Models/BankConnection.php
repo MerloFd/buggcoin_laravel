@@ -6,8 +6,10 @@ use App\Enums\ConnectionStatus;
 use Database\Factories\BankConnectionFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -24,6 +26,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $last_synced_at
  * @property Carbon $created_at
  * @property Carbon $updated_at
+ * @property-read Collection<int, Account> $accounts
  */
 #[Fillable([
     'pluggy_item_id',
@@ -57,6 +60,14 @@ class BankConnection extends Model
             'consent_expires_at' => 'datetime',
             'last_synced_at' => 'datetime',
         ];
+    }
+
+    /**
+     * @return HasMany<Account, $this>
+     */
+    public function accounts(): HasMany
+    {
+        return $this->hasMany(Account::class);
     }
 
     /**
