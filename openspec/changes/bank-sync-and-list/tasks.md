@@ -3,7 +3,7 @@
 ## 1. Fundação
 - [x] 1.1 `laravel new buggcoin` com o starter kit de Vue (Inertia, TypeScript, shadcn-vue, Fortify, Wayfinder) e Pest
 - [x] 1.2 `docker-compose.yml` só com MySQL 8.4; `.env.example` com `PLUGGY_CLIENT_ID`, `PLUGGY_CLIENT_SECRET`, `PLUGGY_BASE_URL`
-- [ ] 1.3 Larastan nível 7, Pint e `npm run typecheck` (vue-tsc) configurados e passando no projeto vazio
+- [x] 1.3 Larastan nível 7, Pint, `npm run types:check` (vue-tsc) e `npm run check` configurados e passando no projeto vazio
 - [ ] 1.4 2FA ativado no Fortify; registro de novos usuários desligado (um usuário criado por seeder)
 - [ ] 1.5 Tokens do design system no tema do shadcn-vue (escuro como padrão), fontes Familjen Grotesk, Inter e IBM Plex Mono
 

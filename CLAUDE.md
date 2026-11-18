@@ -43,5 +43,5 @@ Se o código ou um pedido contradiz essas fontes: pare e pergunte. Não resolva 
 ## Testes e qualidade
 
 - Pest para regras e features. Teste de navegador do Pest para um caminho feliz por tela.
-- Antes de dizer que terminou: `composer test`, `./vendor/bin/pint --test`, `./vendor/bin/phpstan` (nível 7) e `npm run typecheck` passando.
+- Antes de dizer que terminou: `composer test` (Pint, PHPStan nível 7 e Pest), `npm run types:check` (vue-tsc) e `npm run check` (lint e formatação do front) passando.
 - Chamadas ao Pluggy nos testes sempre com `Http::fake()`. Nunca bater na API real em teste.
