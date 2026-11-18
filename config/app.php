@@ -123,4 +123,20 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Owner
+    |--------------------------------------------------------------------------
+    |
+    | BuggCoin has a single user, created by DatabaseSeeder from these values.
+    | Registration is disabled in Fortify.
+    |
+    */
+
+    'owner' => [
+        'name' => env('OWNER_NAME'),
+        'email' => env('OWNER_EMAIL'),
+        'password' => env('OWNER_PASSWORD'),
+    ],
+
 ];
