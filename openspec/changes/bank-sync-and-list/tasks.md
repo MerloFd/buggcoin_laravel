@@ -6,6 +6,7 @@
 - [x] 1.3 Larastan nível 7, Pint, `npm run types:check` (vue-tsc) e `npm run check` configurados e passando no projeto vazio
 - [x] 1.4 2FA ativado no Fortify; registro de novos usuários desligado (um usuário criado por seeder)
 - [x] 1.5 Tokens do design system no tema do shadcn-vue (escuro como padrão), fontes Familjen Grotesk, Inter e IBM Plex Mono
+- [ ] 1.6 Interface do starter kit em pt-BR (telas de login e configurações, componentes e mensagens do servidor)
 
 ## 2. Dados
 - [ ] 2.1 Migration e model `BankConnection`
