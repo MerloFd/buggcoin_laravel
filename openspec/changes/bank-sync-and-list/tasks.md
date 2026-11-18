@@ -16,7 +16,7 @@
 ## 3. Client do Pluggy
 - [ ] 3.1 Ler a doc atual de `POST /auth`, `GET /items/{id}`, `GET /accounts` e `GET /transactions` (paginação) e anotar os endpoints no topo do service
 - [ ] 3.2 `app/Services/Pluggy/PluggyClient.php` com auth em cache e os três métodos de leitura, todos testados com `Http::fake()`
-- [ ] 3.3 Comando `bank:connect {itemId}` que cria a `BankConnection` com nome e logo do conector
+- [ ] 3.3 Action `ConnectBank` (busca o item, cria a `BankConnection` com nome e logo, recusa item inexistente ou duplicado) e comando `bank:connect {itemId}` que a usa
 
 ## 4. Sync (testes primeiro)
 - [ ] 4.1 Testes dos cenários de `specs/bank-sync/spec.md`, todos falhando
@@ -29,6 +29,7 @@
 - [ ] 5.1 Layout mobile com a barra de navegação inferior (Início, Transações, Compromissos, Bancos); Início e Compromissos como placeholders
 - [ ] 5.2 Tela Transações seguindo o artboard Transações (sem os banners de conciliação)
 - [ ] 5.3 Tela Bancos seguindo o artboard Bancos, com liga/desliga e "Sincronizar agora"
+- [ ] 5.3b Botão "Adicionar banco" na tela Bancos: campo para colar o item ID, usando a action `ConnectBank`, com os erros de item inexistente e duplicado
 - [ ] 5.4 Teste de navegador do Pest: login → Bancos → Sincronizar agora (Pluggy falso) → Transações lista os itens
 
 ## 6. Fechamento

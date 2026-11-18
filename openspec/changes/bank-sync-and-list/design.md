@@ -21,7 +21,7 @@
 
 **Conversão de valor.** Pluggy devolve `amount` decimal e `type` (`DEBIT` / `CREDIT`). Gravamos `amount_cents = (int) round(abs($amount) * 100)` e `direction = out` para DEBIT, `in` para CREDIT. Verificar no payload real se transações de cartão seguem a mesma convenção de sinal antes de fechar a regra.
 
-**Registro de conexões.** Nesta mudança, o item ID de cada banco do Meu Pluggy é cadastrado por um comando (`bank:connect {itemId}`), que busca nome e logo do conector. Fluxo de conexão pela interface fica para depois.
+**Registro de conexões.** Nesta mudança, o item ID de cada banco do Meu Pluggy é cadastrado de duas formas, com a mesma lógica (uma action `ConnectBank`): o comando `bank:connect {itemId}` e o botão "Adicionar banco" da tela Bancos, que abre um campo para colar o item ID. A action busca o item no Pluggy (nome e logo do conector) e cria a `BankConnection`. Item ID inexistente ou já cadastrado: nada é criado e a tela mostra o erro. O widget Pluggy Connect fica para depois.
 
 **Falhas.** Erro de autenticação ou item com erro: o job grava `status = error` e a mensagem, sem apagar nada. A tela Bancos mostra o status. Três tentativas com backoff antes de falhar.
 

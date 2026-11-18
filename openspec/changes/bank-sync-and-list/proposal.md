@@ -12,7 +12,7 @@ O problema central é gastar demais sem enxergar. Antes de qualquer gráfico, as
 - Client do Pluggy em `app/Services/Pluggy/`, autenticando só no servidor.
 - Comando `bank:sync` e job `SyncBankConnection`, agendados a cada 4 horas e disparáveis pelo botão "Sincronizar agora".
 - Tela Transações: lista do mês com origem visível e filtro Todas / Do banco / Manuais (o filtro Manuais fica vazio até a próxima mudança).
-- Tela Bancos: as conexões, a última sincronização, o liga/desliga do sync e o botão "Sincronizar agora".
+- Tela Bancos: as conexões, a última sincronização, o liga/desliga do sync, o botão "Sincronizar agora" e o botão "Adicionar banco" (colar o item ID do Meu Pluggy).
 
 ## Fora do escopo
 
@@ -21,6 +21,7 @@ O problema central é gastar demais sem enxergar. Antes de qualquer gráfico, as
 - Início, limite do mês e linha do mês (mudança `home-dashboard`).
 - Faturas e parcelas (mudança `commitments`).
 - Webhooks do Pluggy, PWA e deploy.
+- Widget Pluggy Connect (conectar o banco sem sair do app): depende de confirmar se o Meu Pluggy permite.
 - Categorias próprias: nesta mudança, a categoria do Pluggy aparece como texto.
 
 ## Impacto
