@@ -11,8 +11,8 @@
 ## 2. Dados
 - [x] 2.1 Migration e model `BankConnection`
 - [x] 2.2 Migration e model `Account`
-- [ ] 2.3 Migration e model `Transaction` com índice único em `pluggy_transaction_id`, enums `source`, `direction`, `status` e `pluggy_category` (texto, nulo); só as colunas desta mudança
-- [ ] 2.4 Factories dos três models
+- [x] 2.3 Migration e model `Transaction` com índice único em `pluggy_transaction_id`, enums `source`, `direction`, `status` e `pluggy_category` (texto, nulo); só as colunas desta mudança
+- [x] 2.4 Factories dos três models
 
 ## 3. Client do Pluggy
 - [ ] 3.1 Ler a doc atual de `POST /auth`, `GET /items/{id}`, `GET /accounts` e `GET /transactions` (paginação) e anotar os endpoints no topo do service
