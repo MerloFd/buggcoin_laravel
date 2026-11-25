@@ -17,7 +17,7 @@
 ## 3. Client do Pluggy
 - [x] 3.1 Ler a doc atual de `POST /auth`, `GET /items/{id}`, `GET /accounts` e `GET /v2/transactions` (paginação) e anotar os endpoints no topo do service
 - [x] 3.2 `app/Services/Pluggy/PluggyClient.php` com auth em cache e os três métodos de leitura, todos testados com `Http::fake()`
-- [ ] 3.3 Action `ConnectBank` (busca o item, cria a `BankConnection` com nome e logo, recusa item inexistente ou duplicado) e comando `bank:connect {itemId}` que a usa
+- [x] 3.3 Action `ConnectBank` (busca o item, cria a `BankConnection` com nome e logo, recusa item inexistente ou duplicado) e comando `bank:connect {itemId}` que a usa
 
 ## 4. Sync (testes primeiro)
 - [ ] 4.1 Testes dos cenários de `specs/bank-sync/spec.md`, todos falhando
