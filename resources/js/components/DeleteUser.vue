@@ -29,9 +29,9 @@ const passwordInput = useTemplateRef('passwordInput');
             description="Exclua sua conta e todos os seus dados"
         />
         <div
-            class="space-y-4 rounded-lg border border-red-100 bg-red-50 p-4 dark:border-red-200/10 dark:bg-red-700/10"
+            class="space-y-4 rounded-lg border border-destructive/30 bg-destructive/10 p-4"
         >
-            <div class="relative space-y-0.5 text-red-600 dark:text-red-100">
+            <div class="relative space-y-0.5 text-foreground">
                 <p class="font-medium">Atenção</p>
                 <p class="text-sm">Esta ação não pode ser desfeita.</p>
             </div>

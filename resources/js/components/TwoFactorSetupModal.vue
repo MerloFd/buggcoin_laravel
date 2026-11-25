@@ -115,10 +115,10 @@ watch(
         <DialogContent class="sm:max-w-md">
             <DialogHeader class="flex items-center justify-center">
                 <div
-                    class="mb-3 w-auto rounded-full border border-border bg-card p-0.5 shadow-sm"
+                    class="mb-3 w-auto rounded-md border border-border bg-card p-0.5 shadow-sm"
                 >
                     <div
-                        class="relative overflow-hidden rounded-full border border-border bg-muted p-2.5"
+                        class="relative overflow-hidden rounded-md border border-border bg-muted p-2.5"
                     >
                         <div
                             class="absolute inset-0 grid grid-cols-5 opacity-50"
@@ -227,7 +227,7 @@ watch(
                                     >
                                         <Check
                                             v-if="copied"
-                                            class="w-4 text-green-500"
+                                            class="w-4 text-primary"
                                         />
                                         <Copy v-else class="w-4" />
                                     </button>
