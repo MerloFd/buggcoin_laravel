@@ -33,7 +33,7 @@ defineOptions({
 </script>
 
 <template>
-    <Head title="Security settings" />
+    <Head title="Segurança" />
 
     <h1 class="sr-only">Segurança</h1>
 

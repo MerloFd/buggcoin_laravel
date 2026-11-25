@@ -28,7 +28,7 @@ const user = computed(() => page.props.auth.user);
 </script>
 
 <template>
-    <Head title="Profile settings" />
+    <Head title="Perfil" />
 
     <h1 class="sr-only">Perfil</h1>
 
