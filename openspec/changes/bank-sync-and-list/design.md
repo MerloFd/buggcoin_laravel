@@ -31,9 +31,24 @@
 
 **Falhas.** Erro de autenticação ou item com erro: o job grava `status = error` e a mensagem, sem apagar nada. A tela Bancos mostra o status. Três tentativas com backoff antes de falhar.
 
-**Paginação.** A doc do Pluggy indica endpoint de transações paginado. Ler a documentação atual de `GET /transactions` antes de implementar e percorrer todas as páginas.
+**Paginação.** Transações vêm de `GET /v2/transactions` (cursor: anexar `next` ao caminho até vir nulo), porque `GET /transactions` está depreciado e sai do ar em 2026-12-31. Contas vêm de `GET /accounts` (`page` / `totalPages`). O client percorre todas as páginas.
+
+## Achados da documentação (lida em 2026-11-25)
+
+Fontes: https://api.pluggy.ai/oas3.json e https://docs.pluggy.ai (Authentication, Transaction, Credit card statement cycle, Account, Personal use).
+
+- `POST /auth` devolve `apiKey`, válida por 2 horas, enviada no header `X-API-KEY`.
+- `type` já vem normalizado para cartão: compra é `DEBIT`, pagamento é `CREDIT`. A regra de conversão (valor absoluto + `type`) vale para conta e cartão.
+- **O id pode mudar.** Se descrição, valor ou data mudarem e não houver id da instituição, o Pluggy apaga a transação e cria outra com id novo, comum no fechamento da fatura. `providerId` é o identificador estável, mas só em conectores Open Finance.
+- **Transação nova com data antiga.** A doc manda buscar novidades por `createdAtFrom`, nunca por `dateFrom`. Os dois não podem ser combinados.
+- **Datas em UTC.** A doc manda converter para GMT-3, mas os exemplos vêm à meia-noite UTC, que convertida cairia no dia anterior. Conferir no payload real.
+- **Moeda.** Compra internacional traz `currencyCode` estrangeiro; o valor na moeda da conta fica em `amountInAccountCurrency`.
+- **Pendentes futuras.** `PENDING` inclui parcelas futuras e pagamentos agendados, com data à frente.
+- `category` exige plano Pro, então pode vir nula no Meu Pluggy.
+- Meu Pluggy: grátis, até 5 conexões, atualiza a cada 24 horas, autorização vale 1 ano (`consentExpiresAt`). Autorização vencida devolve listas vazias, sem erro.
 
 ## Perguntas abertas
 
 - Uma transação pendente mantém o mesmo id quando vira efetivada? Se não mantiver, a regra de upsert precisa de outra chave. Verificar com dados reais na primeira semana.
 - Quanto tempo o Open Finance leva para mostrar uma compra nos dois bancos? Medir e anotar no doc.
+- O conector de um item do Meu Pluggy traz o nome do banco ou só "MeuPluggy"? Se for o segundo, `bank:connect` precisa de um nome próprio. Conferir em 6.1.
