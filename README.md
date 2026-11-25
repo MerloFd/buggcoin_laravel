@@ -1,64 +1,118 @@
 # BuggCoin
 
-App pessoal de finanças, de um único usuário, que responde três perguntas:
+[![tests](https://github.com/MerloFd/buggcoin_laravel/actions/workflows/tests.yml/badge.svg)](https://github.com/MerloFd/buggcoin_laravel/actions/workflows/tests.yml)
+![PHP 8.4](https://img.shields.io/badge/PHP-8.4-777BB4?logo=php&logoColor=white)
+![Laravel 13](https://img.shields.io/badge/Laravel-13-FF2D20?logo=laravel&logoColor=white)
+![Vue 3](https://img.shields.io/badge/Vue-3-4FC08D?logo=vuedotjs&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
 
-- Quanto gastei no mês?
-- Quanto ainda posso gastar?
-- Quanto devo nos próximos meses?
+Aplicação web de finanças pessoais que integra contas bancárias via Open Finance para responder três perguntas: **quanto gastei no mês, quanto ainda posso gastar e quanto já está comprometido nos próximos meses.**
 
-A proposta é que as transações cheguem sozinhas dos bancos via [Meu Pluggy](https://meu.pluggy.ai) (Open Finance), com lançamento manual como complemento.
+> **Em desenvolvimento.** A fundação, o modelo de dados e o client de Open Finance estão prontos. A sincronização e as telas financeiras são as próximas etapas.
 
-## Status
+## Destaques técnicos
 
-Em desenvolvimento. A mudança em andamento é a `bank-sync-and-list`.
+| Desafio                                | Solução                                                                                        | Código                                                                           |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| Valores sem erro de arredondamento     | Dinheiro em centavos inteiros, com a direção em coluna própria                                 | [`Transaction`](app/Models/Transaction.php)                                      |
+| Importar sem duplicar o mesmo registro | Índice único no identificador externo da transação                                             | [migration](database/migrations/2026_11_17_000003_create_transactions_table.php) |
+| Consumir uma API externa com segurança | Credenciais só no servidor, chave de acesso criptografada em cache e erros sem dados sensíveis | [`PluggyClient`](app/Services/Pluggy/PluggyClient.php)                           |
+| Paginação confiável                    | Cursor validado, com proteção contra ciclos e respostas malformadas                            | [`PluggyClientTest`](tests/Feature/Pluggy/PluggyClientTest.php)                  |
+| Preservar o histórico financeiro       | Excluir uma conexão nunca apaga contas ou transações                                           | [`AccountTest`](tests/Feature/Models/AccountTest.php)                            |
+| Proteger o acesso                      | Usuário único, cadastro desativado, 2FA e passkeys                                             | [`config/fortify.php`](config/fortify.php)                                       |
 
-- [x] Fundação: login com 2FA e chaves de acesso, tema do design system, interface em pt-BR
-- [x] Modelo de dados: conexões, contas e transações
-- [ ] Client do Pluggy e sincronização
-- [ ] Telas Transações e Bancos
-- [ ] Lançamento manual, conciliação, início, compromissos e PWA
+## Arquitetura
+
+Linhas contínuas já estão implementadas; as tracejadas são as próximas etapas.
+
+```mermaid
+flowchart LR
+    bank["Bancos"] --> pluggy["Pluggy<br/>Open Finance"]
+    pluggy --> client["PluggyClient"]
+    client --> connect["ConnectBank"]
+    command["bank:connect"] --> connect
+    connect --> db[("MySQL")]
+    client -.-> job["Job de sincronização"]
+    scheduler["Agendador"] -.-> job
+    job -.-> db
+    db -.-> ui["Laravel + Inertia + Vue"]
+```
+
+### Modelo de dados
+
+```mermaid
+erDiagram
+    BANK_CONNECTION |o--o{ ACCOUNT : possui
+    ACCOUNT ||--o{ TRANSACTION : registra
+
+    BANK_CONNECTION {
+        string pluggy_item_id UK
+        string connector_name
+        enum status
+        boolean sync_enabled
+    }
+    ACCOUNT {
+        string pluggy_account_id UK
+        enum type
+        bigint balance_cents
+        bigint credit_limit_cents
+    }
+    TRANSACTION {
+        string pluggy_transaction_id UK
+        enum source
+        enum direction
+        bigint amount_cents
+        date occurred_on
+        enum status
+    }
+```
 
 ## Stack
 
-| Camada    | Tecnologias                                            |
-| --------- | ------------------------------------------------------ |
-| Back-end  | PHP 8.4, Laravel 13, Fortify, Wayfinder                |
-| Front-end | Inertia 3, Vue 3.5, TypeScript, Tailwind 4, shadcn-vue |
-| Dados     | MySQL 8.4; fila, cache e sessão no próprio banco       |
-| Qualidade | Pest 5, Pint, Larastan nível 7, vue-tsc                |
-
-## Como rodar
-
-Requer PHP 8.4 (com `pdo_mysql` e `pdo_sqlite`), Composer, Node 22+ e Docker.
-
-1. Copie `.env.example` para `.env` e preencha `DB_PASSWORD` e as três variáveis `OWNER_*`.
-2. Suba o banco e instale o projeto:
-
-    ```bash
-    docker compose up -d --wait
-    composer setup
-    php artisan db:seed
-    composer dev
-    ```
-
-O cadastro é desativado: o único usuário é criado pelo seeder. As credenciais do Pluggy ficam só no servidor e ainda não são necessárias.
+- **Back-end:** PHP 8.4, Laravel 13, Fortify e MySQL 8.4
+- **Front-end:** Vue 3, TypeScript, Inertia 3, Tailwind CSS 4 e shadcn-vue
+- **Testes e qualidade:** Pest 5, Larastan nível 7, Pint, vue-tsc e GitHub Actions
+- **Ambiente:** Docker Compose para o banco de desenvolvimento
 
 ## Qualidade
 
+Cada push na `main` passa no CI por testes, análise estática, checagem de tipos, lint e formatação. Nos testes, qualquer requisição HTTP não simulada falha, então a suíte nunca acessa a API bancária real.
+
 ```bash
-composer test
-npm run types:check
-npm run check
+composer ci:check
 ```
 
-Os testes rodam em SQLite em memória.
+## Como executar
 
-## Decisões de projeto
+**Requisitos:** PHP 8.4 com `pdo_mysql` e `pdo_sqlite`, Composer, Node 22+ e Docker.
 
-- Dinheiro em centavos inteiros, sempre positivo, com a direção em coluna própria. A única exceção é o saldo da conta.
-- A sincronização é idempotente: um índice único impede transações duplicadas.
-- A conciliação é sempre sugerida e confirmada pelo usuário.
+```bash
+git clone https://github.com/MerloFd/buggcoin_laravel.git
+cd buggcoin_laravel
+cp .env.example .env
+```
 
-## Processo
+Preencha `DB_PASSWORD`, `OWNER_NAME`, `OWNER_EMAIL` e `OWNER_PASSWORD` no `.env`. Depois:
 
-O desenvolvimento é orientado a especificações com [OpenSpec](https://github.com/Fission-AI/OpenSpec) (veja `openspec/`) e feito com apoio do Claude Code. As regras de trabalho estão no `CLAUDE.md`; os links do claude.ai citados nele são documentação privada.
+```bash
+docker compose up -d --wait
+composer setup
+php artisan db:seed
+composer dev
+```
+
+As credenciais do Pluggy são opcionais e só são usadas para conectar um banco.
+
+## Roadmap
+
+- [x] Autenticação com 2FA e passkeys
+- [x] Design system com temas claro e escuro
+- [x] Modelo de conexões, contas e transações
+- [x] Client de Open Finance e cadastro de conexões
+- [ ] Sincronização agendada e manual
+- [ ] Telas de transações e bancos
+- [ ] Lançamentos manuais e conciliação assistida
+- [ ] Painel mensal, faturas e parcelas
+- [ ] PWA e deploy
+
+As especificações e as decisões de cada etapa ficam em [`openspec/`](openspec/changes/bank-sync-and-list).
