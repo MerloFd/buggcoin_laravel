@@ -35,6 +35,10 @@ O sistema SHALL permitir disparar o sync manualmente pela tela Bancos e mostrar 
 ### Requirement: Tela Bancos
 O sistema SHALL listar cada conexão com nome do banco, contas, status, última sincronização e o liga/desliga do sync.
 
+#### Scenario: Desligar o sync de um banco
+- **WHEN** o usuário desliga o sync do Banco 2
+- **THEN** `sync_enabled` passa a `false` e a tela continua mostrando as transações já gravadas desse banco
+
 ### Requirement: Adicionar banco pelo item ID
 O sistema SHALL permitir cadastrar uma conexão na tela Bancos colando o item ID do Meu Pluggy, e SHALL NOT criar conexão para um item inexistente ou já cadastrado.
 
@@ -45,7 +49,3 @@ O sistema SHALL permitir cadastrar uma conexão na tela Bancos colando o item ID
 #### Scenario: Item ID já cadastrado
 - **WHEN** o usuário cola um item ID que já tem conexão
 - **THEN** nenhuma conexão nova é criada e a tela mostra "Este banco já está conectado"
-
-#### Scenario: Desligar o sync de um banco
-- **WHEN** o usuário desliga o sync do Banco 2
-- **THEN** `sync_enabled` passa a `false` e a tela continua mostrando as transações já gravadas desse banco
