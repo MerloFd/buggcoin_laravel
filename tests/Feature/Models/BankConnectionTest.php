@@ -1,43 +1,34 @@
 <?php
 
-namespace Tests\Feature\Models;
-
 use App\Enums\ConnectionStatus;
 use App\Models\BankConnection;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
-class BankConnectionTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    public function test_new_connection_is_pending_and_enabled()
-    {
-        $connection = BankConnection::query()->create([
-            'pluggy_item_id' => 'item-1',
-            'connector_name' => 'Banco 1',
-        ])->refresh();
+test('new connection is pending and enabled', function () {
+    $connection = BankConnection::query()->create([
+        'pluggy_item_id' => 'item-1',
+        'connector_name' => 'Banco 1',
+    ])->refresh();
 
-        $this->assertSame(ConnectionStatus::Pending, $connection->status);
-        $this->assertTrue($connection->sync_enabled);
-        $this->assertNull($connection->last_synced_at);
-    }
+    expect($connection->status)->toBe(ConnectionStatus::Pending);
+    expect($connection->sync_enabled)->toBeTrue();
+    expect($connection->last_synced_at)->toBeNull();
+});
 
-    public function test_item_id_is_unique()
-    {
-        BankConnection::factory()->create(['pluggy_item_id' => 'item-1']);
+test('item id is unique', function () {
+    BankConnection::factory()->create(['pluggy_item_id' => 'item-1']);
 
-        $this->expectException(UniqueConstraintViolationException::class);
+    $this->expectException(UniqueConstraintViolationException::class);
 
-        BankConnection::factory()->create(['pluggy_item_id' => 'item-1']);
-    }
+    BankConnection::factory()->create(['pluggy_item_id' => 'item-1']);
+});
 
-    public function test_sync_enabled_scope_skips_disabled_connections()
-    {
-        $enabled = BankConnection::factory()->create();
-        BankConnection::factory()->syncDisabled()->create();
+test('sync enabled scope skips disabled connections', function () {
+    $enabled = BankConnection::factory()->create();
+    BankConnection::factory()->syncDisabled()->create();
 
-        $this->assertSame([$enabled->id], BankConnection::query()->syncEnabled()->pluck('id')->all());
-    }
-}
+    expect(BankConnection::query()->syncEnabled()->pluck('id')->all())->toBe([$enabled->id]);
+});

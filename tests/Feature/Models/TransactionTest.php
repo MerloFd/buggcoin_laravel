@@ -1,7 +1,5 @@
 <?php
 
-namespace Tests\Feature\Models;
-
 use App\Enums\Direction;
 use App\Enums\TransactionSource;
 use App\Enums\TransactionStatus;
@@ -10,53 +8,45 @@ use App\Models\Transaction;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
-use Tests\TestCase;
 
-class TransactionTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    public function test_stores_amount_in_cents_with_separate_direction()
-    {
-        // iFood, R$ 52,90 out.
-        $transaction = Transaction::factory()->create([
-            'amount_cents' => 5290,
-            'direction' => Direction::Out,
-            'description' => 'iFood',
-        ])->refresh();
+test('stores amount in cents with separate direction', function () {
+    // iFood, R$ 52,90 out.
+    $transaction = Transaction::factory()->create([
+        'amount_cents' => 5290,
+        'direction' => Direction::Out,
+        'description' => 'iFood',
+    ])->refresh();
 
-        $this->assertSame(5290, $transaction->amount_cents);
-        $this->assertSame(Direction::Out, $transaction->direction);
-        $this->assertSame(TransactionSource::Pluggy, $transaction->source);
-        $this->assertSame(TransactionStatus::Posted, $transaction->status);
-    }
+    expect($transaction->amount_cents)->toBe(5290);
+    expect($transaction->direction)->toBe(Direction::Out);
+    expect($transaction->source)->toBe(TransactionSource::Pluggy);
+    expect($transaction->status)->toBe(TransactionStatus::Posted);
+});
 
-    public function test_pluggy_transaction_id_is_unique()
-    {
-        Transaction::factory()->create(['pluggy_transaction_id' => 'tx-1']);
+test('pluggy transaction id is unique', function () {
+    Transaction::factory()->create(['pluggy_transaction_id' => 'tx-1']);
 
-        $this->expectException(UniqueConstraintViolationException::class);
+    $this->expectException(UniqueConstraintViolationException::class);
 
-        Transaction::factory()->create(['pluggy_transaction_id' => 'tx-1']);
-    }
+    Transaction::factory()->create(['pluggy_transaction_id' => 'tx-1']);
+});
 
-    public function test_many_manual_transactions_may_have_no_pluggy_id()
-    {
-        Transaction::factory()->manual()->count(2)->create();
+test('many manual transactions may have no pluggy id', function () {
+    Transaction::factory()->manual()->count(2)->create();
 
-        $this->assertSame(2, Transaction::query()->whereNull('pluggy_transaction_id')->count());
-    }
+    expect(Transaction::query()->whereNull('pluggy_transaction_id')->count())->toBe(2);
+});
 
-    public function test_in_month_scope_keeps_only_that_month()
-    {
-        $account = Account::factory()->create();
-        $inside = Transaction::factory()->for($account)->create(['occurred_on' => '2026-11-01']);
-        Transaction::factory()->for($account)->create(['occurred_on' => '2026-10-31']);
-        Transaction::factory()->for($account)->create(['occurred_on' => '2026-12-01']);
+test('in month scope keeps only that month', function () {
+    $account = Account::factory()->create();
+    $inside = Transaction::factory()->for($account)->create(['occurred_on' => '2026-11-01']);
+    Transaction::factory()->for($account)->create(['occurred_on' => '2026-10-31']);
+    Transaction::factory()->for($account)->create(['occurred_on' => '2026-12-01']);
 
-        $ids = Transaction::query()->inMonth(Carbon::parse('2026-11-15'))->pluck('id')->all();
+    $ids = Transaction::query()->inMonth(Carbon::parse('2026-11-15'))->pluck('id')->all();
 
-        $this->assertSame([$inside->id], $ids);
-        $this->assertCount(3, $account->transactions);
-    }
-}
+    expect($ids)->toBe([$inside->id]);
+    expect($account->transactions)->toHaveCount(3);
+});

@@ -1,26 +1,18 @@
 <?php
 
-namespace Tests\Feature;
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
-class AppearanceTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    public function test_dark_theme_is_the_default()
-    {
-        $this->get(route('login'))
-            ->assertOk()
-            ->assertSee('<html lang="pt-BR"  class="dark">', false);
-    }
+test('dark theme is the default', function () {
+    $this->get(route('login'))
+        ->assertOk()
+        ->assertSee('<html lang="pt-BR"  class="dark">', false);
+});
 
-    public function test_light_theme_is_kept_when_chosen()
-    {
-        $this->withUnencryptedCookie('appearance', 'light')
-            ->get(route('login'))
-            ->assertOk()
-            ->assertDontSee('class="dark"', false);
-    }
-}
+test('light theme is kept when chosen', function () {
+    $this->withUnencryptedCookie('appearance', 'light')
+        ->get(route('login'))
+        ->assertOk()
+        ->assertDontSee('class="dark"', false);
+});

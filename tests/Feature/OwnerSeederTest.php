@@ -1,43 +1,34 @@
 <?php
 
-namespace Tests\Feature;
-
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
-use RuntimeException;
-use Tests\TestCase;
 
-class OwnerSeederTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    public function test_seeding_twice_creates_a_single_owner()
-    {
-        config()->set('app.owner', [
-            'name' => 'Owner',
-            'email' => 'Owner@Example.com',
-            'password' => 'secret-password',
-        ]);
+test('seeding twice creates a single owner', function () {
+    config()->set('app.owner', [
+        'name' => 'Owner',
+        'email' => 'Owner@Example.com',
+        'password' => 'secret-password',
+    ]);
 
-        $this->seed(DatabaseSeeder::class);
-        $this->seed(DatabaseSeeder::class);
+    $this->seed(DatabaseSeeder::class);
+    $this->seed(DatabaseSeeder::class);
 
-        $this->assertSame(1, User::query()->count());
+    expect(User::query()->count())->toBe(1);
 
-        $owner = User::query()->firstOrFail();
-        $this->assertSame('owner@example.com', $owner->email);
-        $this->assertTrue(Hash::check('secret-password', $owner->password));
-        $this->assertNotNull($owner->email_verified_at);
-    }
+    $owner = User::query()->firstOrFail();
+    expect($owner->email)->toBe('owner@example.com');
+    expect(Hash::check('secret-password', $owner->password))->toBeTrue();
+    expect($owner->email_verified_at)->not->toBeNull();
+});
 
-    public function test_seeding_without_owner_env_fails()
-    {
-        config()->set('app.owner', ['name' => null, 'email' => null, 'password' => null]);
+test('seeding without owner env fails', function () {
+    config()->set('app.owner', ['name' => null, 'email' => null, 'password' => null]);
 
-        $this->expectException(RuntimeException::class);
+    $this->expectException(RuntimeException::class);
 
-        $this->seed(DatabaseSeeder::class);
-    }
-}
+    $this->seed(DatabaseSeeder::class);
+});
